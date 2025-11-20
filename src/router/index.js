@@ -6,6 +6,7 @@ import ProductManagement from '../views/ProductManagement.vue'
 import NewsManagement from '../views/NewsManagement.vue'
 import ContactManagement from '../views/ContactManagement.vue'
 import ChangePassword from '../views/ChangePassword.vue'
+import UserManagement from '../views/UserManagement.vue'
 
 const routes = [
   {
@@ -35,6 +36,11 @@ const routes = [
         path: 'contacts',
         name: 'ContactManagement',
         component: ContactManagement
+      },
+      {
+        path: 'users',
+        name: 'UserManagement',
+        component: UserManagement
       },
       {
         path: 'change-password',
