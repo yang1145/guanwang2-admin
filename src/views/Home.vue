@@ -110,6 +110,7 @@ import { reactive, onMounted } from 'vue'
 import { getProducts } from '@/api/products'
 import { getNews } from '@/api/news'
 import { getContactMessages } from '@/api/contact'
+import { getUserCount } from '@/api/users'
 import { ElMessage } from 'element-plus'
 
 const statsData = reactive({
@@ -138,8 +139,9 @@ const loadStatsData = async () => {
     const contactResponse = await getContactMessages()
     statsData.contactCount = contactResponse.data.data.length
     
-    // 用户数我们暂时用固定值，实际项目中可以从用户管理API获取
-    statsData.userCount = 128
+    // 获取用户总数
+    const userResponse = await getUserCount()
+    statsData.userCount = userResponse.data.data.count
   } catch (error) {
     ElMessage.error('加载统计数据失败: ' + (error.message || '未知错误'))
   }

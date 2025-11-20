@@ -10,6 +10,11 @@ export const getUsers = () => {
   return apiClient.get('/users')
 }
 
+// 获取用户总数
+export const getUserCount = () => {
+  return apiClient.get('/users/count')
+}
+
 // 获取特定用户信息
 export const getUserById = (id) => {
   return apiClient.get(`/users/${id}`)

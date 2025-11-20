@@ -7,6 +7,9 @@ import NewsManagement from '../views/NewsManagement.vue'
 import ContactManagement from '../views/ContactManagement.vue'
 import ChangePassword from '../views/ChangePassword.vue'
 import UserManagement from '../views/UserManagement.vue'
+import SiteSettings from '../views/SiteSettings.vue'
+import GoodsManagement from '../views/GoodsManagement.vue'
+import CategoryManagement from '../views/CategoryManagement.vue'
 
 const routes = [
   {
@@ -46,6 +49,21 @@ const routes = [
         path: 'change-password',
         name: 'ChangePassword',
         component: ChangePassword
+      },
+      {
+        path: 'site-settings',
+        name: 'SiteSettings',
+        component: SiteSettings
+      },
+      {
+        path: 'goods',
+        name: 'GoodsManagement',
+        component: GoodsManagement
+      },
+      {
+        path: 'categories',
+        name: 'CategoryManagement',
+        component: CategoryManagement
       }
     ]
   },

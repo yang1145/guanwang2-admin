@@ -20,8 +20,10 @@
           <span>内容管理</span>
         </template>
         <el-menu-item index="products">产品管理</el-menu-item>
+        <el-menu-item index="goods">商品管理</el-menu-item>
         <el-menu-item index="news">新闻管理</el-menu-item>
         <el-menu-item index="contacts">联系信息</el-menu-item>
+        <el-menu-item index="categories">分类管理</el-menu-item>
       </el-sub-menu>
       
       <el-sub-menu index="system">
@@ -30,8 +32,7 @@
           <span>系统管理</span>
         </template>
         <el-menu-item index="users">用户管理</el-menu-item>
-        <el-menu-item index="roles">角色管理</el-menu-item>
-        <el-menu-item index="permissions">权限管理</el-menu-item>
+        <el-menu-item index="site-settings">网站设置</el-menu-item>
       </el-sub-menu>
       
       <el-menu-item index="analytics">
@@ -86,6 +87,9 @@ const handleSelect = (index) => {
     case 'products':
       router.push('/admin/products')
       break
+    case 'goods':
+      router.push('/admin/goods')
+      break
     case 'news':
       router.push('/admin/news')
       break
@@ -95,14 +99,14 @@ const handleSelect = (index) => {
     case 'users':
       router.push('/admin/users')
       break
-    case 'roles':
-      router.push('/admin/roles')
-      break
-    case 'permissions':
-      router.push('/admin/permissions')
+    case 'site-settings':
+      router.push('/admin/site-settings')
       break
     case 'analytics':
       router.push('/admin/analytics')
+      break
+    case 'categories':
+      router.push('/admin/categories')
       break
     default:
       router.push('/admin')
@@ -114,12 +118,13 @@ onMounted(() => {
   const routeMap = {
     '/admin': 'home',
     '/admin/products': 'products',
+    '/admin/goods': 'goods',
     '/admin/news': 'news',
     '/admin/contacts': 'contacts',
     '/admin/users': 'users',
-    '/admin/roles': 'roles',
-    '/admin/permissions': 'permissions',
-    '/admin/analytics': 'analytics'
+    '/admin/site-settings': 'site-settings',
+    '/admin/analytics': 'analytics',
+    '/admin/categories': 'categories'
   }
   
   activeIndex.value = routeMap[route.path] || 'home'

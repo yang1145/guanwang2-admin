@@ -149,6 +149,19 @@
   }
   ```
 
+#### 获取用户总数
+- **URL**: `GET /api/users/count`
+- **描述**: 管理员获取用户总数
+- **响应**:
+  ```json
+  {
+    "message": "用户总数获取成功",
+    "data": {
+      "count": 100
+    }
+  }
+  ```
+
 ### 3. 产品管理接口
 
 #### 获取所有产品
@@ -474,6 +487,348 @@
         "id": 1,
         "username": "用户名"
       }
+    }
+  }
+  ```
+
+### 6. 商品管理接口
+
+#### 获取所有商品
+- **URL**: `GET /api/goods`
+- **描述**: 获取所有商品列表，支持按分类筛选
+- **查询参数**:
+  - `category` (可选): 商品分类筛选
+- **响应**:
+  ```json
+  {
+    "message": "商品获取成功",
+    "data": [
+      {
+        "id": 1,
+        "name": "商品名称",
+        "price": 99.90,
+        "currency": "CNY",
+        "description": "商品描述",
+        "category": "商品分类",
+        "image_url": "图片链接",
+        "created_at": "创建时间"
+      }
+    ]
+  }
+  ```
+
+#### 获取特定商品详情
+- **URL**: `GET /api/goods/:id`
+- **描述**: 根据ID获取特定商品的详细信息
+- **路径参数**:
+  - `id`: 商品ID
+- **响应**:
+  ```json
+  {
+    "message": "商品详情获取成功",
+    "data": {
+      "id": 1,
+      "name": "商品名称",
+      "price": 99.90,
+      "currency": "CNY",
+      "description": "商品描述",
+      "category": "商品分类",
+      "image_url": "图片链接",
+      "created_at": "创建时间"
+    }
+  }
+  ```
+
+#### 创建新商品
+- **URL**: `POST /api/goods`
+- **描述**: 创建一个新的商品
+- **请求体**:
+  ```json
+  {
+    "name": "商品名称",
+    "price": 99.90,
+    "currency": "CNY", // 货币类型，如 CNY(人民币)、USD(美元)等
+    "description": "商品描述",
+    "category": "商品分类",
+    "image_url": "图片链接（可选）"
+  }
+  ```
+- **响应**:
+  ```json
+  {
+    "message": "商品创建成功",
+    "data": {
+      "id": 1
+    }
+  }
+  ```
+
+#### 更新商品
+- **URL**: `PUT /api/goods/:id`
+- **描述**: 更新指定ID的商品信息
+- **路径参数**:
+  - `id`: 商品ID
+- **请求体**:
+  ```json
+  {
+    "name": "商品名称",
+    "price": 99.90,
+    "currency": "CNY",
+    "description": "商品描述",
+    "category": "商品分类",
+    "image_url": "图片链接（可选）"
+  }
+  ```
+- **响应**:
+  ```json
+  {
+    "message": "商品更新成功",
+    "data": {
+      "id": 1
+    }
+  }
+  ```
+
+#### 删除商品
+- **URL**: `DELETE /api/goods/:id`
+- **描述**: 删除指定ID的商品
+- **路径参数**:
+  - `id`: 商品ID
+- **响应**:
+  ```json
+  {
+    "message": "商品删除成功",
+    "data": {
+      "id": 1
+    }
+  }
+  ```
+
+### 7. 网站管理接口
+
+#### 获取网站配置信息
+- **URL**: `GET /api/site-config`
+- **描述**: 获取网站配置信息
+- **响应**:
+  ```json
+  {
+    "message": "网站配置信息获取成功",
+    "data": {
+      "id": 1,
+      "company_name": "公司名称",
+      "site_url": "https://www.example.com",
+      "icp_number": "京ICP备12345678号",
+      "police_number": "京公网安备12345678901234号",
+      "copyright_info": "版权所有 © 2023 公司名称",
+      "company_description": "公司介绍内容",
+      "seo_keywords": "关键词1,关键词2,关键词3",
+      "site_title": "网站标题",
+      "friend_links": [
+        {
+          "name": "友情链接1",
+          "url": "https://www.link1.com"
+        }
+      ],
+      "created_at": "创建时间",
+      "updated_at": "更新时间"
+    }
+  }
+  ```
+
+### 8. 分类管理接口
+
+#### 获取所有分类
+- **URL**: `GET /api/categories`
+- **描述**: 获取所有分类列表
+- **响应**:
+  ```json
+  {
+    "message": "分类列表获取成功",
+    "data": [
+      {
+        "id": 1,
+        "name": "计算",
+        "description": "计算服务相关产品",
+        "created_at": "创建时间",
+        "updated_at": "更新时间"
+      },
+      {
+        "id": 2,
+        "name": "存储",
+        "description": "存储服务相关产品",
+        "created_at": "创建时间",
+        "updated_at": "更新时间"
+      }
+    ]
+  }
+  ```
+
+#### 获取特定分类
+- **URL**: `GET /api/categories/:id`
+- **描述**: 根据ID获取特定分类
+- **路径参数**:
+  - `id`: 分类ID
+- **响应**:
+  ```json
+  {
+    "message": "分类获取成功",
+    "data": {
+      "id": 1,
+      "name": "计算",
+      "description": "计算服务相关产品",
+      "created_at": "创建时间",
+      "updated_at": "更新时间"
+    }
+  }
+  ```
+
+#### 创建分类
+- **URL**: `POST /api/categories`
+- **描述**: 创建新分类
+- **请求体**:
+  ```json
+  {
+    "name": "安全",
+    "description": "安全服务相关产品"
+  }
+  ```
+- **响应**:
+  ```json
+  {
+    "message": "分类创建成功",
+    "data": {
+      "id": 3
+    }
+  }
+  ```
+
+#### 更新分类
+- **URL**: `PUT /api/categories/:id`
+- **描述**: 更新特定分类
+- **路径参数**:
+  - `id`: 分类ID
+- **请求体**:
+  ```json
+  {
+    "name": "网络安全",
+    "description": "网络安全服务相关产品"
+  }
+  ```
+- **响应**:
+  ```json
+  {
+    "message": "分类更新成功",
+    "data": {
+      "id": 1
+    }
+  }
+  ```
+
+#### 更新分类列表
+- **URL**: `PUT /api/categories`
+- **描述**: 更新分类列表（替换整个分类列表）
+- **请求体**:
+  ```json
+  {
+    "categories": [
+      {
+        "name": "计算",
+        "description": "计算服务相关产品"
+      },
+      {
+        "name": "存储",
+        "description": "存储服务相关产品"
+      },
+      {
+        "name": "网络",
+        "description": "网络服务相关产品"
+      }
+    ]
+  }
+  ```
+- **响应**:
+  ```json
+  {
+    "message": "分类列表更新成功",
+    "data": {
+      "updatedCount": 3
+    }
+  }
+  ```
+
+#### 同步分类表
+- **URL**: `POST /api/categories/sync`
+- **描述**: 根据现有产品和商品数据同步分类表
+- **响应**:
+  ```json
+  {
+    "message": "分类表同步成功",
+    "data": {
+      "updatedCount": 5,
+      "categories": ["计算", "存储", "网络", "数据库", "容器"]
+    }
+  }
+  ```
+
+#### 删除分类
+- **URL**: `DELETE /api/categories/:id`
+- **描述**: 删除特定分类
+- **路径参数**:
+  - `id`: 分类ID
+- **响应**:
+  ```json
+  {
+    "message": "分类删除成功",
+    "data": {
+      "id": 1
+    }
+  }
+  ```
+
+#### 更新网站配置信息
+- **URL**: `PUT /api/site-config`
+- **描述**: 管理员更新网站配置信息
+- **请求体**:
+  ```json
+  {
+    "company_name": "公司名称",
+    "site_url": "https://www.example.com",
+    "icp_number": "京ICP备12345678号",
+    "police_number": "京公网安备12345678901234号",
+    "copyright_info": "版权所有 © 2023 公司名称",
+    "company_description": "公司介绍内容",
+    "seo_keywords": "关键词1,关键词2,关键词3",
+    "site_title": "网站标题",
+    "friend_links": [
+      {
+        "name": "友情链接1",
+        "url": "https://www.link1.com"
+      }
+    ]
+  }
+  ```
+- **响应**:
+  ```json
+  {
+    "message": "网站配置信息更新成功",
+    "data": {
+      "id": 1,
+      "company_name": "公司名称",
+      "site_url": "https://www.example.com",
+      "icp_number": "京ICP备12345678号",
+      "police_number": "京公网安备12345678901234号",
+      "copyright_info": "版权所有 © 2023 公司名称",
+      "company_description": "公司介绍内容",
+      "seo_keywords": "关键词1,关键词2,关键词3",
+      "site_title": "网站标题",
+      "friend_links": [
+        {
+          "name": "友情链接1",
+          "url": "https://www.link1.com"
+        }
+      ],
+      "created_at": "创建时间",
+      "updated_at": "更新时间"
     }
   }
   ```

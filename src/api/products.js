@@ -6,8 +6,8 @@ const apiClient = axios.create({
 })
 
 // 获取所有产品
-export const getProducts = (category) => {
-  return apiClient.get('/products', { params: { category } })
+export const getProducts = () => {
+  return apiClient.get('/products')
 }
 
 // 获取特定产品详情
