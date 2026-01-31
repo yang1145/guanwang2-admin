@@ -1,53 +1,60 @@
 <template>
-  <div class="change-password">
-    <el-card class="password-card">
-      <template #header>
-        <div class="card-header">
-          <span>修改密码</span>
+  <div class="change-password-container">
+    <el-card class="password-card" shadow="never">
+      <div class="card-content">
+        <div class="header-section">
+          <div class="icon-wrapper">
+            <el-icon><Lock /></el-icon>
+          </div>
+          <h2 class="title">修改密码</h2>
+          <p class="subtitle">为了您的账户安全，建议定期更换密码</p>
         </div>
-      </template>
-      
-      <el-form 
-        :model="passwordForm" 
-        :rules="rules" 
-        ref="passwordFormRef" 
-        label-width="100px"
-        class="password-form"
-      >
-        <el-form-item label="当前密码" prop="currentPassword">
-          <el-input 
-            v-model="passwordForm.currentPassword" 
-            type="password" 
-            show-password
-            placeholder="请输入当前密码"
-          />
-        </el-form-item>
         
-        <el-form-item label="新密码" prop="newPassword">
-          <el-input 
-            v-model="passwordForm.newPassword" 
-            type="password" 
-            show-password
-            placeholder="请输入新密码"
-          />
-        </el-form-item>
-        
-        <el-form-item label="确认新密码" prop="confirmNewPassword">
-          <el-input 
-            v-model="passwordForm.confirmNewPassword" 
-            type="password" 
-            show-password
-            placeholder="请再次输入新密码"
-          />
-        </el-form-item>
-        
-        <el-form-item>
-          <el-button type="primary" @click="submitForm" :loading="loading">
-            {{ loading ? '提交中...' : '确认修改' }}
-          </el-button>
-          <el-button @click="resetForm">重置</el-button>
-        </el-form-item>
-      </el-form>
+        <el-form 
+          :model="passwordForm" 
+          :rules="rules" 
+          ref="passwordFormRef" 
+          label-position="top"
+          class="password-form"
+          size="large"
+        >
+          <el-form-item label="当前密码" prop="currentPassword">
+            <el-input 
+              v-model="passwordForm.currentPassword" 
+              type="password" 
+              show-password
+              placeholder="请输入当前使用的密码"
+              prefix-icon="Key"
+            />
+          </el-form-item>
+          
+          <el-form-item label="新密码" prop="newPassword">
+            <el-input 
+              v-model="passwordForm.newPassword" 
+              type="password" 
+              show-password
+              placeholder="请输入新密码（至少6位）"
+              prefix-icon="Lock"
+            />
+          </el-form-item>
+          
+          <el-form-item label="确认新密码" prop="confirmNewPassword">
+            <el-input 
+              v-model="passwordForm.confirmNewPassword" 
+              type="password" 
+              show-password
+              placeholder="请再次输入新密码"
+              prefix-icon="Check"
+            />
+          </el-form-item>
+          
+          <el-form-item class="form-actions">
+            <el-button type="primary" @click="submitForm" :loading="loading" class="submit-btn">
+              确认修改
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </div>
     </el-card>
   </div>
 </template>
@@ -56,6 +63,7 @@
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { changeAdminPassword } from '@/api/admin'
+import { Lock, Key, Check } from '@element-plus/icons-vue'
 
 const loading = ref(false)
 const passwordFormRef = ref(null)
@@ -105,8 +113,11 @@ const submitForm = async () => {
     }
     
     await changeAdminPassword(requestData)
-    ElMessage.success('密码修改成功')
-    resetForm()
+    ElMessage.success('密码修改成功，请重新登录')
+    
+    // 清空表单
+    passwordFormRef.value.resetFields()
+    
   } catch (error) {
     if (error.response && error.response.data && error.response.data.error) {
       ElMessage.error('修改失败: ' + error.response.data.error)
@@ -117,37 +128,77 @@ const submitForm = async () => {
     loading.value = false
   }
 }
-
-// 重置表单
-const resetForm = () => {
-  passwordFormRef.value.resetFields()
-}
 </script>
 
 <style scoped>
-.change-password {
-  padding: 20px;
-  background-color: #f5f5f5;
-  min-height: 100%;
-  box-sizing: border-box;
+.change-password-container {
+  display: flex;
+  justify-content: center;
+  padding-top: 40px;
 }
 
 .password-card {
-  max-width: 500px;
-  margin: 0 auto;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 480px;
+  border: none;
+  box-shadow: var(--shadow-sm);
 }
 
-.card-header {
-  font-size: 18px;
-  font-weight: 500;
+.card-content {
+  padding: 20px;
+}
+
+.header-section {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.icon-wrapper {
+  width: 56px;
+  height: 56px;
+  background-color: #e6f7ff;
+  color: var(--primary-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin: 0 auto 16px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 8px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
 }
 
 .password-form {
-  margin-top: 20px;
+  margin-top: 24px;
 }
 
-:deep(.el-form-item__label) {
-  font-weight: 500;
+.submit-btn {
+  width: 100%;
+  margin-top: 12px;
+}
+
+.form-actions {
+  margin-bottom: 0;
+}
+
+@media (max-width: 576px) {
+  .change-password-container {
+    padding-top: 0;
+  }
+  
+  .password-card {
+    box-shadow: none;
+  }
 }
 </style>

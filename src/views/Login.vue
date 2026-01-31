@@ -1,49 +1,60 @@
 <template>
   <div class="login-container">
-    <div class="login-box">
-      <div class="login-header">
-        <h2>管理员登录</h2>
+    <div class="login-content">
+      <div class="login-left">
+        <div class="login-bg-content">
+          <img src="@/assets/vue.svg" alt="Logo" class="login-logo-large" />
+          <h1 class="login-title-large">管理后台系统</h1>
+          <p class="login-desc">简洁、高效、专业的管理平台</p>
+        </div>
       </div>
       
-      <el-form 
-        ref="loginFormRef" 
-        :model="loginForm" 
-        :rules="loginRules" 
-        class="login-form"
-        @submit.prevent="handleLogin"
-      >
-        <el-form-item prop="username">
-          <el-input 
-            v-model="loginForm.username" 
-            placeholder="请输入用户名" 
-            prefix-icon="User"
+      <div class="login-right">
+        <div class="login-box">
+          <div class="login-header">
+            <h2>欢迎登录</h2>
+            <p>请输入您的账号和密码</p>
+          </div>
+          
+          <el-form 
+            ref="loginFormRef" 
+            :model="loginForm" 
+            :rules="loginRules" 
+            class="login-form"
+            @submit.prevent="handleLogin"
             size="large"
-          />
-        </el-form-item>
-        
-        <el-form-item prop="password">
-          <el-input 
-            v-model="loginForm.password" 
-            type="password" 
-            placeholder="请输入密码" 
-            prefix-icon="Lock"
-            size="large"
-            show-password
-          />
-        </el-form-item>
-        
-        <el-form-item>
-          <el-button 
-            type="primary" 
-            size="large" 
-            class="login-button"
-            :loading="loading"
-            @click="handleLogin"
           >
-            登录
-          </el-button>
-        </el-form-item>
-      </el-form>
+            <el-form-item prop="username">
+              <el-input 
+                v-model="loginForm.username" 
+                placeholder="用户名" 
+                prefix-icon="User"
+              />
+            </el-form-item>
+            
+            <el-form-item prop="password">
+              <el-input 
+                v-model="loginForm.password" 
+                type="password" 
+                placeholder="密码" 
+                prefix-icon="Lock"
+                show-password
+              />
+            </el-form-item>
+            
+            <el-form-item>
+              <el-button 
+                type="primary" 
+                class="login-button"
+                :loading="loading"
+                @click="handleLogin"
+              >
+                登录
+              </el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -86,8 +97,6 @@ const handleLogin = async () => {
         })
         
         ElMessage.success('登录成功')
-        console.log('登录成功:', response.data)
-        // 登录成功后跳转到管理主页
         router.push('/admin')
       } catch (error) {
         console.error('登录失败:', error)
@@ -102,61 +111,147 @@ const handleLogin = async () => {
 
 <style scoped>
 .login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
-  width: 100vw;
-  background-color: #f5f5f5;
-  padding: 20px;
-  box-sizing: border-box;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100%;
+  background-color: #f0f2f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-content {
+  width: 1000px;
+  height: 600px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  display: flex;
+  overflow: hidden;
+}
+
+.login-left {
+  flex: 1;
+  background: linear-gradient(135deg, #1890FF 0%, #36cfc9 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 装饰背景圆圈 */
+.login-left::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: -20%;
+  width: 60%;
+  height: 60%;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+}
+
+.login-left::after {
+  content: '';
+  position: absolute;
+  bottom: -10%;
+  right: -10%;
+  width: 50%;
+  height: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+}
+
+.login-bg-content {
+  text-align: center;
+  color: #fff;
+  z-index: 1;
+}
+
+.login-logo-large {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 24px;
+}
+
+.login-title-large {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  letter-spacing: 2px;
+}
+
+.login-desc {
+  font-size: 16px;
+  opacity: 0.9;
+  letter-spacing: 1px;
+}
+
+.login-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
 }
 
 .login-box {
   width: 100%;
-  max-width: 400px;
-  padding: 30px;
-  background: #fff;
-  border-radius: 4px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
-  z-index: 1;
+  max-width: 360px;
 }
 
 .login-header {
-  text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
+  text-align: left;
 }
 
 .login-header h2 {
-  margin: 0;
-  color: #333;
-  font-size: 24px;
-  font-weight: 500;
+  font-size: 28px;
+  color: #1f2d3d;
+  margin-bottom: 8px;
+  font-weight: 600;
 }
 
-.login-form {
-  margin-top: 20px;
+.login-header p {
+  color: #909399;
+  font-size: 14px;
+}
+
+.login-form :deep(.el-input__wrapper) {
+  box-shadow: 0 0 0 1px #dcdfe6 inset;
+  background-color: #fff;
+  transition: all 0.3s;
+}
+
+.login-form :deep(.el-input__wrapper:hover) {
+  box-shadow: 0 0 0 1px #c0c4cc inset;
+}
+
+.login-form :deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 1px var(--primary-color) inset;
 }
 
 .login-button {
   width: 100%;
-  margin-top: 10px;
+  height: 44px;
+  font-size: 16px;
+  margin-top: 16px;
+  letter-spacing: 2px;
 }
 
-/* 响应式设计 */
-@media (max-width: 480px) {
-  .login-container {
-    padding: 10px;
+@media (max-width: 992px) {
+  .login-content {
+    width: 90%;
+    height: auto;
+    min-height: 500px;
   }
   
-  .login-box {
-    padding: 20px;
+  .login-left {
+    display: none;
+  }
+  
+  .login-right {
+    padding: 60px 40px;
   }
 }
 </style>

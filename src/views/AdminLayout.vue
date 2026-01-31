@@ -1,18 +1,29 @@
 <template>
   <el-container class="layout-container">
     <el-aside class="layout-sidebar" :width="sidebarWidth">
+      <div class="logo-container">
+        <img src="@/assets/vue.svg" alt="Logo" class="logo" />
+        <span v-if="!isCollapse" class="title">管理后台</span>
+      </div>
       <SidebarMenu ref="sidebarRef" />
     </el-aside>
     
     <el-container>
       <el-header class="layout-header">
         <div class="header-content">
-          <h2>管理系统</h2>
+          <div class="header-left">
+            <!-- 面包屑或其他左侧内容 -->
+            <span class="welcome-text">欢迎回来，管理员</span>
+          </div>
           <div class="header-actions">
-            <el-dropdown @command="handleCommand">
-              <el-avatar :size="32" icon="UserFilled" style="cursor: pointer;" />
+            <el-dropdown @command="handleCommand" trigger="click">
+              <div class="avatar-container">
+                <el-avatar :size="32" icon="UserFilled" class="user-avatar" />
+                <span class="username">Admin</span>
+                <el-icon><CaretBottom /></el-icon>
+              </div>
               <template #dropdown>
-                <el-dropdown-menu>
+                <el-dropdown-menu class="user-dropdown">
                   <el-dropdown-item command="profile">个人资料</el-dropdown-item>
                   <el-dropdown-item command="changePassword">修改密码</el-dropdown-item>
                   <el-dropdown-item command="settings">系统设置</el-dropdown-item>
@@ -25,7 +36,11 @@
       </el-header>
       
       <el-main class="layout-main">
-        <router-view />
+        <router-view v-slot="{ Component }">
+          <transition name="fade" mode="out-in">
+            <component :is="Component" />
+          </transition>
+        </router-view>
       </el-main>
     </el-container>
   </el-container>
@@ -34,6 +49,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { CaretBottom } from '@element-plus/icons-vue'
 import SidebarMenu from '@/components/SidebarMenu.vue'
 
 const router = useRouter()
@@ -42,10 +58,12 @@ const sidebarRef = ref(null)
 // 计算侧边栏宽度
 const sidebarWidth = computed(() => {
   if (sidebarRef.value) {
-    return sidebarRef.value.isCollapse ? '64px' : '200px'
+    return sidebarRef.value.isCollapse ? '64px' : '220px'
   }
-  return '200px'
+  return '220px'
 })
+
+const isCollapse = computed(() => sidebarRef.value?.isCollapse || false)
 
 const handleCommand = (command) => {
   switch (command) {
@@ -53,21 +71,18 @@ const handleCommand = (command) => {
       logout()
       break
     case 'profile':
-      // 可以跳转到个人资料页面
       console.log('查看个人资料')
       break
     case 'changePassword':
       router.push('/admin/change-password')
       break
     case 'settings':
-      // 可以跳转到系统设置页面
       console.log('系统设置')
       break
   }
 }
 
 const logout = () => {
-  // 简单的退出登录操作，实际项目中可能需要清理token等
   router.push('/login')
 }
 </script>
@@ -76,21 +91,52 @@ const logout = () => {
 .layout-container {
   min-height: 100vh;
   width: 100%;
-  margin: 0;
-  padding: 0;
 }
 
 .layout-sidebar {
-  height: 100%;
-  background-color: #545c64;
-  transition: width 0.3s ease;
+  height: 100vh;
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--border-light);
+  transition: width 0.3s cubic-bezier(0.2, 0, 0, 1) 0s;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.05);
+}
+
+.logo-container {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border-light);
+  overflow: hidden;
+}
+
+.logo {
+  width: 32px;
+  height: 32px;
+}
+
+.title {
+  margin-left: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--primary-color);
+  white-space: nowrap;
 }
 
 .layout-header {
-  background-color: #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  padding: 0 20px;
-  height: 60px;
+  background-color: var(--header-bg);
+  border-bottom: 1px solid var(--border-light);
+  padding: 0 24px;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 99;
 }
 
 .header-content {
@@ -100,35 +146,69 @@ const logout = () => {
   height: 100%;
 }
 
+.welcome-text {
+  color: var(--text-regular);
+  font-size: 14px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.avatar-container:hover {
+  background-color: rgba(0, 0, 0, 0.025);
+}
+
+.user-avatar {
+  background-color: var(--primary-color);
+}
+
+.username {
+  margin: 0 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
 .layout-main {
-  background-color: #f5f5f5;
-  padding: 0;
-  min-height: calc(100vh - 60px);
-  overflow: auto;
-  margin: 0;
-  width: 100%;
-}
-
-/* 确保主要内容区域占满剩余空间 */
-:deep(.el-main) {
-  min-height: calc(100vh - 60px) !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  background-color: #f5f5f5 !important;
-  max-width: 100%;
+  background-color: var(--bg-page);
+  padding: 24px;
+  min-height: calc(100vh - 64px);
   overflow-x: hidden;
 }
 
-/* 防止Element Plus的默认样式导致的滚动条 */
-:deep(.el-container) {
-  margin: 0 !important;
-  padding: 0 !important;
-  max-width: 100vw;
-  overflow-x: hidden;
+/* 过渡动画 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
 }
 
-:deep(.el-aside) {
-  max-width: 100%;
-  overflow-x: hidden;
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .layout-header {
+    padding: 0 16px;
+  }
+  
+  .layout-main {
+    padding: 16px;
+  }
+  
+  .username {
+    display: none;
+  }
 }
 </style>

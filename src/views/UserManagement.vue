@@ -1,34 +1,59 @@
 <template>
   <div class="user-management">
-    <el-card class="management-card">
+    <el-card class="management-card" shadow="never">
       <template #header>
         <div class="card-header">
-          <span>用户管理</span>
+          <div class="header-title">用户管理</div>
+          <div class="header-actions">
+            <el-button type="primary" icon="Plus">新增用户</el-button>
+          </div>
         </div>
       </template>
       
+      <!-- 搜索/筛选区域 (可选，预留位置) -->
+      <div class="filter-container">
+        <el-input
+          v-model="searchQuery"
+          placeholder="搜索用户..."
+          style="width: 240px"
+          prefix-icon="Search"
+          clearable
+          @clear="handleSearch"
+          @keyup.enter="handleSearch"
+        />
+        <el-button type="primary" plain @click="handleSearch">搜索</el-button>
+      </div>
+      
       <!-- 用户列表 -->
-      <el-table :data="users" v-loading="loading" style="width: 100%">
-        <el-table-column prop="id" label="ID" width="80"></el-table-column>
-        <el-table-column prop="phone" label="手机号"></el-table-column>
-        <el-table-column prop="email" label="邮箱"></el-table-column>
-        <el-table-column prop="created_at" label="注册时间" width="180"></el-table-column>
-        <el-table-column label="操作" width="150">
+      <el-table 
+        :data="users" 
+        v-loading="loading" 
+        style="width: 100%"
+        :header-cell-style="{ background: '#fafafa', color: '#606266' }"
+      >
+        <el-table-column prop="id" label="ID" width="80" align="center"></el-table-column>
+        <el-table-column prop="phone" label="手机号" min-width="120"></el-table-column>
+        <el-table-column prop="email" label="邮箱" min-width="180"></el-table-column>
+        <el-table-column prop="created_at" label="注册时间" min-width="180"></el-table-column>
+        <el-table-column label="操作" width="150" fixed="right" align="center">
           <template #default="scope">
-            <el-button size="small" type="danger" @click="removeUser(scope.row.id)">删除</el-button>
+            <el-button link type="primary" size="small" @click="editUser(scope.row)">编辑</el-button>
+            <el-button link type="danger" size="small" @click="removeUser(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
       
       <!-- 分页 -->
-      <el-pagination
-        v-model:current-page="currentPage"
-        :page-size="pageSize"
-        :total="total"
-        layout="total, prev, pager, next"
-        @current-change="handlePageChange"
-        class="pagination"
-      />
+      <div class="pagination-container">
+        <el-pagination
+          v-model:current-page="currentPage"
+          :page-size="pageSize"
+          :total="total"
+          :background="true"
+          layout="total, prev, pager, next, jumper"
+          @current-change="handlePageChange"
+        />
+      </div>
     </el-card>
   </div>
 </template>
@@ -37,8 +62,10 @@
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getUsers, deleteUser } from '@/api/users'
+import { Search, Plus } from '@element-plus/icons-vue'
 
 const loading = ref(false)
+const searchQuery = ref('')
 
 // 表格数据
 const users = ref([])
@@ -58,6 +85,15 @@ const loadUsers = async () => {
   } finally {
     loading.value = false
   }
+}
+
+const handleSearch = () => {
+  // 实现搜索逻辑
+  loadUsers()
+}
+
+const editUser = (row) => {
+  console.log('Edit user', row)
 }
 
 // 删除用户
@@ -97,14 +133,11 @@ onMounted(() => {
 
 <style scoped>
 .user-management {
-  padding: 20px;
-  background-color: #f5f5f5;
-  min-height: 100%;
-  box-sizing: border-box;
+  /* 移除 padding，由 AdminLayout 统一管理 */
 }
 
 .management-card {
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  border: none;
 }
 
 .card-header {
@@ -113,9 +146,21 @@ onMounted(() => {
   align-items: center;
 }
 
-.pagination {
+.header-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.filter-container {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.pagination-container {
   margin-top: 20px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
 }
 </style>

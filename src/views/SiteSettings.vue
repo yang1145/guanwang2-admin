@@ -1,107 +1,133 @@
 <template>
   <div class="site-settings">
-    <el-card class="settings-card">
-      <template #header>
-        <div class="card-header">
-          <span>网站设置</span>
-        </div>
-      </template>
-      
-      <el-form 
-        :model="siteConfig" 
-        :rules="rules" 
-        ref="formRef" 
-        label-width="120px"
-        v-loading="loading"
-      >
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="公司名称" prop="company_name">
-              <el-input v-model="siteConfig.company_name" placeholder="请输入公司名称" />
-            </el-form-item>
-          </el-col>
-          
-          <el-col :span="12">
-            <el-form-item label="网站URL" prop="site_url">
-              <el-input v-model="siteConfig.site_url" placeholder="请输入网站URL" />
-            </el-form-item>
-          </el-col>
-          
-          <el-col :span="12">
-            <el-form-item label="ICP备案号" prop="icp_number">
-              <el-input v-model="siteConfig.icp_number" placeholder="请输入ICP备案号" />
-            </el-form-item>
-          </el-col>
-          
-          <el-col :span="12">
-            <el-form-item label="公安备案号" prop="police_number">
-              <el-input v-model="siteConfig.police_number" placeholder="请输入公安备案号" />
-            </el-form-item>
-          </el-col>
-          
-          <el-col :span="24">
-            <el-form-item label="版权信息" prop="copyright_info">
+    <div class="page-header">
+      <h2 class="page-title">网站设置</h2>
+      <div class="page-actions">
+        <el-button @click="resetForm">重置</el-button>
+        <el-button type="primary" @click="saveSettings" :loading="saving">保存更改</el-button>
+      </div>
+    </div>
+
+    <el-card class="settings-card" shadow="never">
+      <el-tabs v-model="activeTab" class="settings-tabs">
+        <!-- 基础配置 -->
+        <el-tab-pane label="基础配置" name="basic">
+          <el-form 
+            :model="siteConfig" 
+            :rules="rules" 
+            ref="basicFormRef" 
+            label-position="top"
+            class="settings-form"
+          >
+            <el-row :gutter="40">
+              <el-col :span="24">
+                <div class="form-section-title">站点信息</div>
+              </el-col>
+              <el-col :xs="24" :md="12">
+                <el-form-item label="网站标题" prop="site_title">
+                  <el-input v-model="siteConfig.site_title" placeholder="请输入网站标题" />
+                  <div class="form-tip">显示在浏览器标签页上的标题</div>
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :md="12">
+                <el-form-item label="网站地址 (URL)" prop="site_url">
+                  <el-input v-model="siteConfig.site_url" placeholder="例如：https://www.example.com" />
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :md="12">
+                <el-form-item label="公司名称" prop="company_name">
+                  <el-input v-model="siteConfig.company_name" placeholder="请输入公司全称" />
+                </el-form-item>
+              </el-col>
+              
+              <el-col :span="24">
+                <el-divider border-style="dashed" />
+                <div class="form-section-title">备案与版权</div>
+              </el-col>
+              
+              <el-col :xs="24" :md="12">
+                <el-form-item label="ICP 备案号" prop="icp_number">
+                  <el-input v-model="siteConfig.icp_number" placeholder="例如：京ICP备12345678号" />
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :md="12">
+                <el-form-item label="公安备案号" prop="police_number">
+                  <el-input v-model="siteConfig.police_number" placeholder="例如：京公网安备12345678号" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="版权信息" prop="copyright_info">
+                  <el-input 
+                    v-model="siteConfig.copyright_info" 
+                    placeholder="例如：© 2023 Company Name. All Rights Reserved." 
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+        </el-tab-pane>
+
+        <!-- SEO 设置 -->
+        <el-tab-pane label="SEO 设置" name="seo">
+          <el-form 
+            :model="siteConfig" 
+            ref="seoFormRef" 
+            label-position="top"
+            class="settings-form"
+          >
+            <el-form-item label="SEO 关键词 (Keywords)">
               <el-input 
-                v-model="siteConfig.copyright_info" 
-                placeholder="请输入版权信息" 
+                v-model="siteConfig.seo_keywords" 
+                placeholder="多个关键词用英文逗号分隔" 
                 type="textarea"
                 :rows="2"
               />
+              <div class="form-tip">关键词之间请使用英文逗号 "," 分隔，建议不超过 5 个核心词</div>
             </el-form-item>
-          </el-col>
-          
-          <el-col :span="24">
-            <el-form-item label="公司介绍" prop="company_description">
+            
+            <el-form-item label="站点描述 (Description)">
               <el-input 
                 v-model="siteConfig.company_description" 
-                placeholder="请输入公司介绍" 
+                placeholder="请输入简短的公司介绍，将用于搜索引擎的搜索结果描述" 
                 type="textarea"
-                :rows="4"
+                :rows="6"
+                show-word-limit
+                maxlength="200"
               />
             </el-form-item>
-          </el-col>
+          </el-form>
+        </el-tab-pane>
+
+        <!-- 友情链接 -->
+        <el-tab-pane label="友情链接" name="links">
+          <div class="links-header">
+            <div class="links-tip">管理网站底部的友情链接展示</div>
+            <el-button type="primary" plain icon="Plus" @click="addFriendLink">新增链接</el-button>
+          </div>
           
-          <el-col :span="24">
-            <el-form-item label="SEO关键词" prop="seo_keywords">
-              <el-input 
-                v-model="siteConfig.seo_keywords" 
-                placeholder="请输入SEO关键词，多个关键词用逗号分隔" 
-              />
-            </el-form-item>
-          </el-col>
-          
-          <el-col :span="12">
-            <el-form-item label="网站标题" prop="site_title">
-              <el-input v-model="siteConfig.site_title" placeholder="请输入网站标题" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        
-        <el-divider>友情链接</el-divider>
-        
-        <el-form-item>
-          <el-button type="primary" @click="addFriendLink">添加友情链接</el-button>
-        </el-form-item>
-        
-        <el-form-item v-for="(link, index) in siteConfig.friend_links" :key="index" :label="`链接${index+1}`">
-          <el-row :gutter="10">
-            <el-col :span="10">
-              <el-input v-model="link.name" placeholder="链接名称"></el-input>
-            </el-col>
-            <el-col :span="10">
-              <el-input v-model="link.url" placeholder="链接地址"></el-input>
-            </el-col>
-            <el-col :span="4">
-              <el-button type="danger" @click="removeFriendLink(index)">删除</el-button>
-            </el-col>
-          </el-row>
-        </el-form-item>
-        
-        <el-form-item>
-          <el-button type="primary" @click="saveSettings" :loading="saving">保存设置</el-button>
-          <el-button @click="resetForm">重置</el-button>
-        </el-form-item>
-      </el-form>
+          <div v-if="siteConfig.friend_links.length === 0" class="empty-state">
+            <el-icon class="empty-icon"><Link /></el-icon>
+            <p>暂无友情链接</p>
+          </div>
+
+          <div v-else class="links-list">
+            <div v-for="(link, index) in siteConfig.friend_links" :key="index" class="link-item">
+              <div class="link-drag-handle">
+                <el-icon><Rank /></el-icon>
+              </div>
+              <div class="link-inputs">
+                <el-input v-model="link.name" placeholder="网站名称" class="link-name-input">
+                  <template #prepend>名称</template>
+                </el-input>
+                <el-input v-model="link.url" placeholder="https://" class="link-url-input">
+                  <template #prepend>网址</template>
+                </el-input>
+              </div>
+              <el-button type="danger" circle plain icon="Delete" @click="removeFriendLink(index)"></el-button>
+            </div>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
     </el-card>
   </div>
 </template>
@@ -110,8 +136,10 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getSiteConfig, updateSiteConfig } from '@/api/siteConfig.js'
+import { Plus, Delete, Link, Rank } from '@element-plus/icons-vue'
 
-const formRef = ref(null)
+const activeTab = ref('basic')
+const basicFormRef = ref(null)
 const loading = ref(false)
 const saving = ref(false)
 
@@ -146,10 +174,8 @@ const fetchSiteConfig = async () => {
     const response = await getSiteConfig()
     const data = response.data.data
     
-    // 更新表单数据
     Object.keys(data).forEach(key => {
       if (key === 'friend_links') {
-        // 处理友情链接数组
         siteConfig.friend_links = Array.isArray(data.friend_links) ? data.friend_links : []
       } else if (siteConfig.hasOwnProperty(key)) {
         siteConfig[key] = data[key] || ''
@@ -164,14 +190,17 @@ const fetchSiteConfig = async () => {
 
 // 保存设置
 const saveSettings = async () => {
-  const valid = await formRef.value.validate().catch(() => false)
-  if (!valid) {
-    return
+  // 验证基础表单
+  if (basicFormRef.value) {
+    const valid = await basicFormRef.value.validate().catch(() => false)
+    if (!valid) {
+      activeTab.value = 'basic'
+      return
+    }
   }
   
   saving.value = true
   try {
-    // 准备提交数据，过滤掉空链接
     const submitData = {
       ...siteConfig,
       friend_links: siteConfig.friend_links.filter(link => link.name && link.url)
@@ -186,19 +215,16 @@ const saveSettings = async () => {
   }
 }
 
-// 添加友情链接
 const addFriendLink = () => {
   siteConfig.friend_links.push({ name: '', url: '' })
 }
 
-// 删除友情链接
 const removeFriendLink = (index) => {
   siteConfig.friend_links.splice(index, 1)
 }
 
-// 重置表单
 const resetForm = () => {
-  formRef.value.resetFields()
+  if (basicFormRef.value) basicFormRef.value.resetFields()
   fetchSiteConfig()
 }
 
@@ -209,21 +235,153 @@ onMounted(() => {
 
 <style scoped>
 .site-settings {
-  padding: 20px;
-  width: 100%;
-  box-sizing: border-box;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.page-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
 }
 
 .settings-card {
-  width: 100%;
+  border: none;
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
 }
 
-.card-header {
-  font-size: 18px;
-  font-weight: bold;
+.settings-tabs :deep(.el-tabs__nav-wrap::after) {
+  height: 1px;
+  background-color: var(--border-light);
 }
 
-.el-divider {
-  margin: 30px 0;
+.settings-tabs :deep(.el-tabs__item) {
+  font-size: 15px;
+  height: 48px;
+  line-height: 48px;
+  color: var(--text-regular);
+}
+
+.settings-tabs :deep(.el-tabs__item.is-active) {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.settings-tabs :deep(.el-tab-pane) {
+  padding: 24px 0 0;
+}
+
+.settings-form {
+  max-width: 800px;
+}
+
+.form-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  padding-left: 10px;
+  border-left: 3px solid var(--primary-color);
+}
+
+.form-tip {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* 友情链接样式 */
+.links-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.links-tip {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  background: var(--bg-page);
+  border-radius: 8px;
+  color: var(--text-secondary);
+}
+
+.empty-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+  opacity: 0.5;
+}
+
+.links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.link-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  transition: all 0.3s;
+}
+
+.link-item:hover {
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.link-drag-handle {
+  cursor: move;
+  color: var(--text-secondary);
+  padding: 4px;
+}
+
+.link-inputs {
+  flex: 1;
+  display: flex;
+  gap: 12px;
+}
+
+.link-name-input {
+  flex: 1;
+  max-width: 200px;
+}
+
+.link-url-input {
+  flex: 2;
+}
+
+@media (max-width: 768px) {
+  .link-item {
+    flex-wrap: wrap;
+  }
+  
+  .link-inputs {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .link-name-input, .link-url-input {
+    max-width: 100%;
+  }
 }
 </style>

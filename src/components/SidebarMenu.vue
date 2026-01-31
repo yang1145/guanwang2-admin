@@ -3,15 +3,14 @@
     <el-menu
       :default-active="activeIndex"
       class="menu"
-      background-color="#545c64"
-      text-color="#fff"
-      active-text-color="#ffd04b"
       :collapse="isCollapse"
       @select="handleSelect"
+      :collapse-transition="false"
+      unique-opened
     >
       <el-menu-item index="home">
         <el-icon><House /></el-icon>
-        <span>首页</span>
+        <template #title>首页</template>
       </el-menu-item>
       
       <el-sub-menu index="content">
@@ -37,7 +36,7 @@
       
       <el-menu-item index="analytics">
         <el-icon><DataAnalysis /></el-icon>
-        <span>数据分析</span>
+        <template #title>数据分析</template>
       </el-menu-item>
     </el-menu>
     
@@ -66,54 +65,30 @@ const route = useRoute()
 const isCollapse = ref(false)
 const activeIndex = ref('home')
 
-// 定义暴露给父组件的属性和方法
 defineExpose({
   isCollapse
 })
 
-// 切换菜单折叠状态
 const toggleCollapse = () => {
   isCollapse.value = !isCollapse.value
 }
 
-// 处理菜单选择
 const handleSelect = (index) => {
   activeIndex.value = index
-  // 这里可以根据index进行路由跳转
   switch(index) {
-    case 'home':
-      router.push('/admin')
-      break
-    case 'products':
-      router.push('/admin/products')
-      break
-    case 'goods':
-      router.push('/admin/goods')
-      break
-    case 'news':
-      router.push('/admin/news')
-      break
-    case 'contacts':
-      router.push('/admin/contacts')
-      break
-    case 'users':
-      router.push('/admin/users')
-      break
-    case 'site-settings':
-      router.push('/admin/site-settings')
-      break
-    case 'analytics':
-      router.push('/admin/analytics')
-      break
-    case 'categories':
-      router.push('/admin/categories')
-      break
-    default:
-      router.push('/admin')
+    case 'home': router.push('/admin'); break;
+    case 'products': router.push('/admin/products'); break;
+    case 'goods': router.push('/admin/goods'); break;
+    case 'news': router.push('/admin/news'); break;
+    case 'contacts': router.push('/admin/contacts'); break;
+    case 'users': router.push('/admin/users'); break;
+    case 'site-settings': router.push('/admin/site-settings'); break;
+    case 'analytics': router.push('/admin/analytics'); break;
+    case 'categories': router.push('/admin/categories'); break;
+    default: router.push('/admin');
   }
 }
 
-// 根据当前路由设置激活菜单项
 onMounted(() => {
   const routeMap = {
     '/admin': 'home',
@@ -126,59 +101,74 @@ onMounted(() => {
     '/admin/analytics': 'analytics',
     '/admin/categories': 'categories'
   }
-  
   activeIndex.value = routeMap[route.path] || 'home'
 })
 </script>
 
 <style scoped>
 .sidebar-menu {
-  height: 100%;
+  height: calc(100% - 64px); /* 减去logo高度 */
   display: flex;
   flex-direction: column;
-  background-color: #545c64;
-  position: relative;
-  transition: all 0.3s ease;
-  min-height: 100%;
-  max-height: 100vh;
+  background-color: var(--sidebar-bg);
 }
 
 .menu {
   border-right: none;
   flex: 1;
   overflow-y: auto;
-  max-height: calc(100vh - 40px);
 }
 
-:deep(.el-menu--inline) {
-  background-color: #434a50 !important;
+/* 覆盖 Element Plus 菜单样式以适应蓝白主题 */
+:deep(.el-menu) {
+  background-color: var(--sidebar-bg);
+  border-right: none;
 }
 
-:deep(.el-menu--inline .el-menu-item) {
-  background-color: #434a50 !important;
-  padding-left: 48px !important;
+:deep(.el-menu-item), :deep(.el-sub-menu__title) {
+  color: var(--text-regular);
+  height: 50px;
+  line-height: 50px;
+  margin: 4px 8px;
+  border-radius: 4px;
 }
 
-:deep(.el-menu--inline .el-menu-item:hover) {
-  background-color: #32383e !important;
+:deep(.el-menu-item:hover), :deep(.el-sub-menu__title:hover) {
+  color: var(--primary-color);
+  background-color: rgba(24, 144, 255, 0.05);
 }
 
-:deep(.el-menu-item:hover) {
-  background-color: #434a50 !important;
+:deep(.el-menu-item.is-active) {
+  color: var(--primary-color);
+  background-color: var(--sidebar-active-bg);
+  font-weight: 500;
 }
 
+:deep(.el-sub-menu.is-active .el-sub-menu__title) {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* 图标样式 */
+:deep(.el-icon) {
+  font-size: 18px;
+  margin-right: 4px;
+}
+
+/* 折叠按钮 */
 .toggle-button {
-  height: 40px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #434a50;
-  color: #fff;
   cursor: pointer;
-  border-top: 1px solid #32383e;
+  border-top: 1px solid var(--border-light);
+  color: var(--text-secondary);
+  transition: all 0.3s;
 }
 
 .toggle-button:hover {
-  background-color: #32383e;
+  color: var(--primary-color);
+  background-color: rgba(0, 0, 0, 0.025);
 }
 </style>
