@@ -27,5 +27,9 @@ export const updateUser = (id, data) => {
 
 // 删除用户
 export const deleteUser = (id) => {
-  return apiClient.delete(`/users/${id}`)
+  return request.delete(`/users/${id}`)
+}
+
+export const createUser = (data) => {
+  return request.post('/users/register', data)
 }
