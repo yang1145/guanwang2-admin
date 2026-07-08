@@ -12,6 +12,8 @@ import GoodsManagement from '../views/GoodsManagement.vue'
 import CategoryManagement from '../views/CategoryManagement.vue'
 import HelpDocs from '../views/HelpDocs.vue'
 import Analytics from '../views/Analytics.vue'
+import AIChatControl from '../views/AIChatControl.vue'
+import AIChat from '../views/AIChat.vue'
 
 const routes = [
   {
@@ -76,6 +78,16 @@ const routes = [
         path: 'analytics',
         name: 'Analytics',
         component: Analytics
+      },
+      {
+        path: 'ai-chat',
+        name: 'AIChatControl',
+        component: AIChatControl
+      },
+      {
+        path: 'ai-chat-test',
+        name: 'AIChat',
+        component: AIChat
       }
     ]
   },

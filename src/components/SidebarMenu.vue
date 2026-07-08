@@ -39,6 +39,16 @@
         <el-icon><DataAnalysis /></el-icon>
         <template #title>数据分析</template>
       </el-menu-item>
+      
+      <el-menu-item index="ai-chat">
+        <el-icon><ChatDotRound /></el-icon>
+        <template #title>AI 聊天控制</template>
+      </el-menu-item>
+      
+      <el-menu-item index="ai-chat-test">
+        <el-icon><ChatLineRound /></el-icon>
+        <template #title>AI 聊天测试</template>
+      </el-menu-item>
     </el-menu>
     
     <div class="toggle-button" @click="toggleCollapse">
@@ -56,6 +66,8 @@ import {
   Setting,
   Document,
   DataAnalysis,
+  ChatDotRound,
+  ChatLineRound,
   Expand,
   Fold
 } from '@element-plus/icons-vue'
@@ -87,6 +99,8 @@ const handleSelect = (index) => {
     case 'analytics': router.push('/admin/analytics'); break;
     case 'categories': router.push('/admin/categories'); break;
     case 'help': router.push('/admin/help'); break;
+    case 'ai-chat': router.push('/admin/ai-chat'); break;
+    case 'ai-chat-test': router.push('/admin/ai-chat-test'); break;
     default: router.push('/admin');
   }
 }
@@ -102,7 +116,9 @@ onMounted(() => {
     '/admin/site-settings': 'site-settings',
     '/admin/analytics': 'analytics',
     '/admin/categories': 'categories',
-    '/admin/help': 'help'
+    '/admin/help': 'help',
+    '/admin/ai-chat': 'ai-chat',
+    '/admin/ai-chat-test': 'ai-chat-test'
   }
   activeIndex.value = routeMap[route.path] || 'home'
 })
