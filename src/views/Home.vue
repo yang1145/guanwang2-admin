@@ -74,6 +74,14 @@
               <div class="nav-icon bg-pink"><el-icon><Files /></el-icon></div>
               <span>分类管理</span>
             </div>
+            <div class="nav-item" @click="$router.push('/admin/ai-chat')">
+              <div class="nav-icon bg-purple"><el-icon><ChatDotRound /></el-icon></div>
+              <span>AI 聊天控制</span>
+            </div>
+            <div class="nav-item" @click="$router.push('/admin/ai-chat-test')">
+              <div class="nav-icon bg-indigo"><el-icon><ChatLineRound /></el-icon></div>
+              <span>AI 聊天测试</span>
+            </div>
           </div>
         </el-card>
 
@@ -169,7 +177,7 @@
 <script setup>
 import { reactive, onMounted, ref, computed } from 'vue'
 import { 
-  User, Document, Box, ChatDotRound, Setting, Files,
+  User, Document, Box, ChatDotRound, ChatLineRound, Setting, Files,
   QuestionFilled
 } from '@element-plus/icons-vue'
 import { getProducts } from '@/api/products'
@@ -482,6 +490,7 @@ onMounted(() => {
 .bg-purple { background: #722ED1; }
 .bg-cyan { background: #13C2C2; }
 .bg-pink { background: #EB2F96; }
+.bg-indigo { background: #4F46E5; }
 
 /* 快捷导航 */
 .quick-nav {

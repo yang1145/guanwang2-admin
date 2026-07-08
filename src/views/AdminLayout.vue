@@ -18,7 +18,7 @@
           <div class="header-actions">
             <el-dropdown @command="handleCommand" trigger="click">
               <div class="avatar-container">
-                <el-avatar :size="32" icon="UserFilled" class="user-avatar" />
+                <el-avatar :size="32" :src="defaultAvatar" class="user-avatar" />
                 <span class="username">Admin</span>
                 <el-icon><CaretBottom /></el-icon>
               </div>
@@ -47,6 +47,7 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { CaretBottom } from '@element-plus/icons-vue'
 import SidebarMenu from '@/components/SidebarMenu.vue'
+import defaultAvatar from '@/assets/default-avatar.svg'
 
 const router = useRouter()
 const sidebarRef = ref(null)
@@ -67,13 +68,13 @@ const handleCommand = (command) => {
       logout()
       break
     case 'profile':
-      console.log('查看个人资料')
+      router.push('/admin/profile')
       break
     case 'changePassword':
-      router.push('/admin/change-password')
+      router.push('/admin/profile')
       break
     case 'settings':
-      console.log('系统设置')
+      router.push('/admin/site-settings')
       break
   }
 }

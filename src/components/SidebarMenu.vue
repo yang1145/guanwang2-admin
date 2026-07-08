@@ -49,6 +49,11 @@
         <el-icon><ChatLineRound /></el-icon>
         <template #title>AI 聊天测试</template>
       </el-menu-item>
+      
+      <el-menu-item index="about">
+        <el-icon><InfoFilled /></el-icon>
+        <template #title>关于</template>
+      </el-menu-item>
     </el-menu>
     
     <div class="toggle-button" @click="toggleCollapse">
@@ -68,6 +73,7 @@ import {
   DataAnalysis,
   ChatDotRound,
   ChatLineRound,
+  InfoFilled,
   Expand,
   Fold
 } from '@element-plus/icons-vue'
@@ -101,6 +107,7 @@ const handleSelect = (index) => {
     case 'help': router.push('/admin/help'); break;
     case 'ai-chat': router.push('/admin/ai-chat'); break;
     case 'ai-chat-test': router.push('/admin/ai-chat-test'); break;
+    case 'about': router.push('/admin/about'); break;
     default: router.push('/admin');
   }
 }
@@ -118,7 +125,8 @@ onMounted(() => {
     '/admin/categories': 'categories',
     '/admin/help': 'help',
     '/admin/ai-chat': 'ai-chat',
-    '/admin/ai-chat-test': 'ai-chat-test'
+    '/admin/ai-chat-test': 'ai-chat-test',
+    '/admin/about': 'about'
   }
   activeIndex.value = routeMap[route.path] || 'home'
 })

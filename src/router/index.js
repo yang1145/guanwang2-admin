@@ -14,6 +14,8 @@ import HelpDocs from '../views/HelpDocs.vue'
 import Analytics from '../views/Analytics.vue'
 import AIChatControl from '../views/AIChatControl.vue'
 import AIChat from '../views/AIChat.vue'
+import About from '../views/About.vue'
+import AdminProfile from '../views/AdminProfile.vue'
 
 const routes = [
   {
@@ -88,6 +90,16 @@ const routes = [
         path: 'ai-chat-test',
         name: 'AIChat',
         component: AIChat
+      },
+      {
+        path: 'about',
+        name: 'About',
+        component: About
+      },
+      {
+        path: 'profile',
+        name: 'AdminProfile',
+        component: AdminProfile
       }
     ]
   },
