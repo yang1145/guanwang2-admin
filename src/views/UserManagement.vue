@@ -5,7 +5,7 @@
         <div class="card-header">
           <div class="header-title">用户管理</div>
           <div class="header-actions">
-            <el-button type="primary" icon="Plus">新增用户</el-button>
+            <el-button type="primary" @click="handleAddUser">新增用户</el-button>
           </div>
         </div>
       </template>

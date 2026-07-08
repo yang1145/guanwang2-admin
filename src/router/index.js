@@ -10,6 +10,8 @@ import UserManagement from '../views/UserManagement.vue'
 import SiteSettings from '../views/SiteSettings.vue'
 import GoodsManagement from '../views/GoodsManagement.vue'
 import CategoryManagement from '../views/CategoryManagement.vue'
+import HelpDocs from '../views/HelpDocs.vue'
+import Analytics from '../views/Analytics.vue'
 
 const routes = [
   {
@@ -64,6 +66,16 @@ const routes = [
         path: 'categories',
         name: 'CategoryManagement',
         component: CategoryManagement
+      },
+      {
+        path: 'help',
+        name: 'HelpDocs',
+        component: HelpDocs
+      },
+      {
+        path: 'analytics',
+        name: 'Analytics',
+        component: Analytics
       }
     ]
   },

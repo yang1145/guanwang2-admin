@@ -8,7 +8,7 @@
       <SidebarMenu ref="sidebarRef" />
     </el-aside>
     
-    <el-container>
+    <el-container class="layout-body" :style="{ marginLeft: sidebarWidth }">
       <el-header class="layout-header">
         <div class="header-content">
           <div class="header-left">
@@ -36,11 +36,7 @@
       </el-header>
       
       <el-main class="layout-main">
-        <router-view v-slot="{ Component }">
-          <transition name="fade" mode="out-in">
-            <component :is="Component" />
-          </transition>
-        </router-view>
+        <router-view />
       </el-main>
     </el-container>
   </el-container>
@@ -94,16 +90,20 @@ const logout = () => {
 }
 
 .layout-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
   height: 100vh;
   background-color: var(--sidebar-bg);
   border-right: 1px solid var(--border-light);
-  transition: width 0.3s cubic-bezier(0.2, 0, 0, 1) 0s;
+  transition: width 0.25s ease;
   display: flex;
   flex-direction: column;
-  position: sticky;
-  top: 0;
   z-index: 100;
-  box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.05);
+}
+
+.layout-body {
+  transition: margin-left 0.25s ease;
 }
 
 .logo-container {
@@ -162,7 +162,6 @@ const logout = () => {
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 4px;
-  transition: background-color 0.3s;
 }
 
 .avatar-container:hover {
@@ -184,17 +183,6 @@ const logout = () => {
   padding: 24px;
   min-height: calc(100vh - 64px);
   overflow-x: hidden;
-}
-
-/* 过渡动画 */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }
 
 /* 响应式 */

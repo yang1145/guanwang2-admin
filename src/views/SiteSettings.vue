@@ -341,12 +341,11 @@ onMounted(() => {
   background: #fff;
   border: 1px solid var(--border-light);
   border-radius: 6px;
-  transition: all 0.3s;
+  transition: border-color 0.2s;
 }
 
 .link-item:hover {
   border-color: var(--primary-color);
-  box-shadow: var(--shadow-sm);
 }
 
 .link-drag-handle {

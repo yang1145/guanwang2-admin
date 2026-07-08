@@ -49,8 +49,8 @@
   --radius-lg: 8px;
   
   /* 过渡 */
-  --transition-base: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-  --transition-fast: all 0.2s linear;
+  --transition-base: all 0.15s cubic-bezier(0.645, 0.045, 0.355, 1);
+  --transition-fast: all 0.1s linear;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -98,7 +98,7 @@ a {
   font-weight: 500;
   color: var(--primary-color);
   text-decoration: none;
-  transition: var(--transition-fast);
+  transition: color 0.15s;
 }
 
 a:hover {
@@ -125,7 +125,6 @@ h1, h2, h3, h4, h5, h6 {
 ::-webkit-scrollbar-thumb {
   background: #d9d9d9;
   border-radius: 3px;
-  transition: var(--transition-fast);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -151,11 +150,6 @@ h1, h2, h3, h4, h5, h6 {
   border: none;
   border-radius: var(--radius-base);
   box-shadow: var(--shadow-sm) !important;
-  transition: var(--transition-base);
-}
-
-.el-card:hover {
-  box-shadow: var(--shadow-base) !important;
 }
 
 .el-input__inner {
@@ -195,16 +189,6 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* 动画 */
-.fade-in {
-  animation: fadeIn 0.3s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 /* 工具类 */
 .text-center { text-align: center; }
 .text-right { text-align: right; }
@@ -212,3 +196,34 @@ h1, h2, h3, h4, h5, h6 {
 .mt-20 { margin-top: 20px; }
 .mb-10 { margin-bottom: 10px; }
 .mb-20 { margin-bottom: 20px; }
+
+/* 分页按钮统一为白色扁平风格 */
+.el-pagination .el-pager li,
+.el-pagination button,
+.el-pagination.is-background .el-pager li,
+.el-pagination.is-background button {
+  background-color: #fff;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-base);
+  font-weight: 500;
+}
+
+.el-pagination .el-pager li,
+.el-pagination.is-background .el-pager li {
+  margin: 0 4px;
+}
+
+.el-pagination .el-pager li:hover,
+.el-pagination button:hover,
+.el-pagination.is-background .el-pager li:hover,
+.el-pagination.is-background button:hover {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.el-pagination .el-pager li.is-active,
+.el-pagination.is-background .el-pager li.is-active {
+  background-color: #fff;
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}

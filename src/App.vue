@@ -95,7 +95,6 @@ html, body {
 
 :deep(.el-select-dropdown__item) {
   padding: 10px 16px;
-  transition: all 0.3s;
 }
 
 :deep(.el-select-dropdown__item.is-selected) {

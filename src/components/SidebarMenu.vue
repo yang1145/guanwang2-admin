@@ -32,6 +32,7 @@
         </template>
         <el-menu-item index="users">用户管理</el-menu-item>
         <el-menu-item index="site-settings">网站设置</el-menu-item>
+        <el-menu-item index="help">帮助文档</el-menu-item>
       </el-sub-menu>
       
       <el-menu-item index="analytics">
@@ -85,6 +86,7 @@ const handleSelect = (index) => {
     case 'site-settings': router.push('/admin/site-settings'); break;
     case 'analytics': router.push('/admin/analytics'); break;
     case 'categories': router.push('/admin/categories'); break;
+    case 'help': router.push('/admin/help'); break;
     default: router.push('/admin');
   }
 }
@@ -99,7 +101,8 @@ onMounted(() => {
     '/admin/users': 'users',
     '/admin/site-settings': 'site-settings',
     '/admin/analytics': 'analytics',
-    '/admin/categories': 'categories'
+    '/admin/categories': 'categories',
+    '/admin/help': 'help'
   }
   activeIndex.value = routeMap[route.path] || 'home'
 })
@@ -107,7 +110,7 @@ onMounted(() => {
 
 <style scoped>
 .sidebar-menu {
-  height: calc(100% - 64px); /* 减去logo高度 */
+  height: 100%;
   display: flex;
   flex-direction: column;
   background-color: var(--sidebar-bg);
@@ -117,42 +120,62 @@ onMounted(() => {
   border-right: none;
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
-/* 覆盖 Element Plus 菜单样式以适应蓝白主题 */
+/* 覆盖 Element Plus 菜单样式 */
 :deep(.el-menu) {
   background-color: var(--sidebar-bg);
   border-right: none;
 }
 
-:deep(.el-menu-item), :deep(.el-sub-menu__title) {
+:deep(.el-menu-item),
+:deep(.el-sub-menu__title) {
   color: var(--text-regular);
-  height: 50px;
-  line-height: 50px;
-  margin: 4px 8px;
-  border-radius: 4px;
+  height: 44px;
+  line-height: 44px;
+  margin: 4px 12px;
+  border-radius: 6px;
+  font-size: 14px;
 }
 
-:deep(.el-menu-item:hover), :deep(.el-sub-menu__title:hover) {
+:deep(.el-menu-item:hover),
+:deep(.el-sub-menu__title:hover) {
   color: var(--primary-color);
-  background-color: rgba(24, 144, 255, 0.05);
+  background-color: #f5f7fa;
 }
 
 :deep(.el-menu-item.is-active) {
   color: var(--primary-color);
   background-color: var(--sidebar-active-bg);
-  font-weight: 500;
+  font-weight: 600;
 }
 
-:deep(.el-sub-menu.is-active .el-sub-menu__title) {
-  color: var(--text-primary);
-  font-weight: 500;
+:deep(.el-sub-menu.is-active > .el-sub-menu__title) {
+  color: var(--primary-color);
+  font-weight: 600;
 }
 
 /* 图标样式 */
 :deep(.el-icon) {
   font-size: 18px;
   margin-right: 4px;
+}
+
+/* 折叠状态下图标居中 */
+:deep(.el-menu--collapse) {
+  width: 64px;
+}
+
+:deep(.el-menu--collapse .el-menu-item),
+:deep(.el-menu--collapse .el-sub-menu__title) {
+  margin: 4px 0;
+  padding: 0 !important;
+  justify-content: center;
+}
+
+:deep(.el-menu--collapse .el-icon) {
+  margin-right: 0;
 }
 
 /* 折叠按钮 */
@@ -164,11 +187,10 @@ onMounted(() => {
   cursor: pointer;
   border-top: 1px solid var(--border-light);
   color: var(--text-secondary);
-  transition: all 0.3s;
+  transition: color 0.2s;
 }
 
 .toggle-button:hover {
   color: var(--primary-color);
-  background-color: rgba(0, 0, 0, 0.025);
 }
 </style>

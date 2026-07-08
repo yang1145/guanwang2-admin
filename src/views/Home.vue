@@ -3,17 +3,13 @@
     <!-- 顶部欢迎区 -->
     <div class="dashboard-header">
       <div class="header-left">
-        <h2 class="welcome-title">早安，管理员，祝你开心每一天！</h2>
-        <p class="welcome-desc">今日晴，20℃ - 32℃，天气不错，记得多喝水。</p>
+        <h2 class="welcome-title">{{ greeting }}，管理员</h2>
+        <p class="welcome-desc">{{ currentDate }} · 今天是 {{ weekDay }}</p>
       </div>
       <div class="header-right">
-        <div class="stat-box">
-          <span class="stat-label">待办事项</span>
-          <span class="stat-value">8/24</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-label">本周访问</span>
-          <span class="stat-value">1,234</span>
+        <div class="api-status" :class="{ 'is-online': apiOnline, 'is-offline': !apiOnline }">
+          <span class="status-dot"></span>
+          <span class="status-text">{{ apiOnline ? '系统运行正常' : '连接异常' }}</span>
         </div>
       </div>
     </div>
@@ -21,10 +17,10 @@
     <!-- 核心指标卡片 -->
     <el-row :gutter="24" class="stat-cards">
       <el-col :xs="24" :sm="12" :md="6" v-for="(item, index) in statCards" :key="index">
-        <el-card shadow="hover" class="stat-card-item">
+        <el-card shadow="hover" class="stat-card-item" v-loading="loading">
           <div class="stat-card-header">
             <span class="stat-card-title">{{ item.title }}</span>
-            <el-tag :type="item.trendType" size="small" effect="plain">
+            <el-tag :type="item.trendType" size="small" effect="plain" v-if="item.trend">
               {{ item.trend }}
             </el-tag>
           </div>
@@ -35,15 +31,15 @@
             </div>
           </div>
           <div class="stat-card-footer">
-            <span>总{{ item.title }}</span>
+            <span>{{ item.footerLabel }}</span>
             <span class="footer-value">{{ item.total }}</span>
           </div>
         </el-card>
       </el-col>
     </el-row>
 
-    <!-- 主要内容区 -->
-    <el-row :gutter="24">
+    <!-- 快捷入口与待办提醒 -->
+    <el-row :gutter="24" class="main-content">
       <!-- 左侧内容 -->
       <el-col :xs="24" :lg="16">
         <!-- 快捷导航 -->
@@ -81,23 +77,21 @@
           </div>
         </el-card>
 
-        <!-- 最新动态 -->
+        <!-- 数据分布 -->
         <el-card shadow="hover" class="mb-24">
           <template #header>
             <div class="card-header">
-              <span>最新动态</span>
-              <el-button link type="primary">查看全部</el-button>
+              <span>数据概览</span>
+              <span class="card-subtitle">各模块数据汇总</span>
             </div>
           </template>
-          <div class="activity-list">
-            <div class="activity-item" v-for="(activity, index) in activities" :key="index">
-              <div class="activity-avatar" :class="activity.type">
-                <el-icon><component :is="activity.icon" /></el-icon>
+          <div class="overview-list">
+            <div class="overview-item" v-for="(item, index) in overviewItems" :key="index">
+              <div class="overview-info">
+                <div class="overview-title">{{ item.title }}</div>
+                <div class="overview-desc">{{ item.desc }}</div>
               </div>
-              <div class="activity-content">
-                <div class="activity-title">{{ activity.title }}</div>
-                <div class="activity-time">{{ activity.time }}</div>
-              </div>
+              <div class="overview-value" :class="item.valueClass">{{ item.value }}</div>
             </div>
           </div>
         </el-card>
@@ -105,18 +99,26 @@
 
       <!-- 右侧内容 -->
       <el-col :xs="24" :lg="8">
-        <!-- 系统公告 -->
+        <!-- 待办提醒 -->
         <el-card shadow="hover" class="mb-24">
           <template #header>
             <div class="card-header">
-              <span>系统公告</span>
+              <span>待办提醒</span>
+              <el-tag v-if="pendingTotal > 0" type="danger" size="small">{{ pendingTotal }} 项</el-tag>
             </div>
           </template>
-          <div class="notice-list">
-            <div class="notice-item" v-for="(notice, index) in notices" :key="index">
-              <el-tag size="small" :type="notice.type" class="notice-tag">{{ notice.tag }}</el-tag>
-              <span class="notice-text">{{ notice.content }}</span>
+          <div class="todo-list">
+            <div class="todo-item" v-for="(todo, index) in todoList" :key="index" @click="$router.push(todo.path)">
+              <div class="todo-icon" :class="todo.iconClass">
+                <el-icon><component :is="todo.icon" /></el-icon>
+              </div>
+              <div class="todo-content">
+                <div class="todo-title">{{ todo.title }}</div>
+                <div class="todo-desc">{{ todo.desc }}</div>
+              </div>
+              <el-tag :type="todo.tagType" size="small" class="todo-tag">{{ todo.count }}</el-tag>
             </div>
+            <el-empty v-if="pendingTotal === 0" description="暂无待办事项" :image-size="60" />
           </div>
         </el-card>
 
@@ -128,15 +130,15 @@
             </div>
           </template>
           <div class="help-list">
-            <a href="#" class="help-item">
+            <a class="help-item" @click="$router.push('/admin/help?section=products')">
               <el-icon><QuestionFilled /></el-icon>
               <span>如何发布新产品？</span>
             </a>
-            <a href="#" class="help-item">
+            <a class="help-item" @click="$router.push('/admin/help?section=users')">
               <el-icon><QuestionFilled /></el-icon>
               <span>如何管理用户权限？</span>
             </a>
-            <a href="#" class="help-item">
+            <a class="help-item" @click="$router.push('/admin/help?section=settings')">
               <el-icon><QuestionFilled /></el-icon>
               <span>系统配置说明</span>
             </a>
@@ -165,32 +167,41 @@
 </template>
 
 <script setup>
-import { reactive, onMounted } from 'vue'
+import { reactive, onMounted, ref, computed } from 'vue'
 import { 
   User, Document, Box, ChatDotRound, Setting, Files,
-  TrendCharts, Bell, QuestionFilled
+  QuestionFilled
 } from '@element-plus/icons-vue'
 import { getProducts } from '@/api/products'
 import { getNews } from '@/api/news'
 import { getContactMessages } from '@/api/contact'
 import { getUserCount } from '@/api/users'
 
+const loading = ref(true)
+const apiOnline = ref(false)
+
+// 待处理数据
+const pendingData = reactive({
+  contacts: 0,
+  unreadContacts: 0
+})
+
+// 实时数据
+const dashboardData = reactive({
+  users: 0,
+  products: 0,
+  news: 0,
+  contacts: 0
+})
+
 // 统计卡片数据
 const statCards = reactive([
-  {
-    title: '访问量',
-    value: '8,846',
-    total: '120,000',
-    trend: '+12%',
-    trendType: 'success',
-    icon: TrendCharts,
-    iconClass: 'text-blue'
-  },
   {
     title: '用户数',
     value: '0',
     total: '0',
-    trend: '+5%',
+    footerLabel: '总用户数',
+    trend: '',
     trendType: 'warning',
     icon: User,
     iconClass: 'text-purple'
@@ -199,40 +210,95 @@ const statCards = reactive([
     title: '产品数',
     value: '0',
     total: '0',
-    trend: '+2%',
+    footerLabel: '总产品数',
+    trend: '',
     trendType: 'primary',
     icon: Box,
     iconClass: 'text-orange'
   },
   {
+    title: '新闻数',
+    value: '0',
+    total: '0',
+    footerLabel: '总新闻数',
+    trend: '',
+    trendType: 'success',
+    icon: Document,
+    iconClass: 'text-green'
+  },
+  {
     title: '留言数',
     value: '0',
     total: '0',
-    trend: '+8%',
+    footerLabel: '总留言数',
+    trend: '',
     trendType: 'success',
     icon: ChatDotRound,
-    iconClass: 'text-green'
+    iconClass: 'text-blue'
   }
 ])
 
-// 最新动态模拟数据
-const activities = reactive([
-  { title: '管理员 发布了新产品 "智能手表 X1"', time: '10分钟前', icon: Box, type: 'bg-blue' },
-  { title: '新用户 "张三" 注册了账号', time: '30分钟前', icon: User, type: 'bg-green' },
-  { title: '收到一条新的留言咨询', time: '1小时前', icon: ChatDotRound, type: 'bg-purple' },
-  { title: '系统完成了每日数据备份', time: '2小时前', icon: Setting, type: 'bg-orange' },
-  { title: '管理员 更新了 "关于我们" 页面', time: '5小时前', icon: Document, type: 'bg-cyan' }
+// 数据概览
+const overviewItems = computed(() => [
+  {
+    title: '内容总量',
+    desc: '产品 + 新闻',
+    value: dashboardData.products + dashboardData.news,
+    valueClass: 'text-primary'
+  },
+  {
+    title: '用户互动',
+    desc: '留言总数',
+    value: dashboardData.contacts,
+    valueClass: 'text-success'
+  },
+  {
+    title: '注册用户',
+    desc: '后台用户',
+    value: dashboardData.users,
+    valueClass: 'text-warning'
+  },
+  {
+    title: '待处理留言',
+    desc: '需尽快回复',
+    value: pendingData.unreadContacts,
+    valueClass: pendingData.unreadContacts > 0 ? 'text-danger' : 'text-secondary'
+  }
 ])
 
-// 公告模拟数据
-const notices = reactive([
-  { tag: '通知', type: 'primary', content: '系统将于本周六凌晨进行维护升级' },
-  { tag: '活动', type: 'success', content: '双十一促销活动配置指南' },
-  { tag: '警告', type: 'danger', content: '请及时处理待回复的客户留言' }
+// 待办列表
+const todoList = computed(() => [
+  {
+    title: '未处理留言',
+    desc: '等待回复的客户咨询',
+    count: pendingData.unreadContacts,
+    icon: ChatDotRound,
+    iconClass: 'bg-purple',
+    tagType: pendingData.unreadContacts > 0 ? 'danger' : 'info',
+    path: '/admin/contacts'
+  }
 ])
+
+const pendingTotal = computed(() => {
+  return todoList.value.reduce((sum, item) => sum + item.count, 0)
+})
+
+// 当前日期和问候语
+const now = new Date()
+const currentDate = ref(now.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }))
+const weekDay = ref(now.toLocaleDateString('zh-CN', { weekday: 'long' }))
+const hour = now.getHours()
+const greeting = computed(() => {
+  if (hour < 6) return '夜深了'
+  if (hour < 11) return '早上好'
+  if (hour < 14) return '中午好'
+  if (hour < 18) return '下午好'
+  return '晚上好'
+})
 
 // 加载真实数据
 const loadData = async () => {
+  loading.value = true
   try {
     const [products, news, contacts, users] = await Promise.all([
       getProducts(),
@@ -241,18 +307,41 @@ const loadData = async () => {
       getUserCount()
     ])
     
+    apiOnline.value = true
+    
     // 更新统计数据
-    statCards[1].value = users.data.data.count || 0
-    statCards[1].total = users.data.data.count || 0
+    const userCount = users.data?.data?.count || 0
+    const productList = products.data?.data || []
+    const newsList = news.data?.data || []
+    const contactList = contacts.data?.data || []
     
-    statCards[2].value = products.data.data.length || 0
-    statCards[2].total = products.data.data.length || 0
+    dashboardData.users = userCount
+    dashboardData.products = productList.length
+    dashboardData.news = newsList.length
+    dashboardData.contacts = contactList.length
     
-    statCards[3].value = contacts.data.data.length || 0
-    statCards[3].total = contacts.data.data.length || 0
+    statCards[0].value = userCount
+    statCards[0].total = userCount
+    
+    statCards[1].value = productList.length
+    statCards[1].total = productList.length
+    
+    statCards[2].value = newsList.length
+    statCards[2].total = newsList.length
+    
+    statCards[3].value = contactList.length
+    statCards[3].total = contactList.length
+    
+    // 计算未处理留言（根据 status 字段）
+    pendingData.unreadContacts = contactList.filter(item => 
+      !item.status || item.status === 'unread' || item.status === 'pending'
+    ).length
     
   } catch (error) {
     console.error('加载数据失败', error)
+    apiOnline.value = false
+  } finally {
+    loading.value = false
   }
 }
 
@@ -290,27 +379,30 @@ onMounted(() => {
   font-size: 14px;
 }
 
-.header-right {
+.api-status {
   display: flex;
-  gap: 32px;
-}
-
-.stat-box {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.stat-label {
-  color: var(--text-secondary);
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 20px;
   font-size: 14px;
-  margin-bottom: 4px;
 }
 
-.stat-value {
-  font-size: 24px;
-  font-weight: 500;
-  color: var(--text-primary);
+.api-status.is-online {
+  color: #52C41A;
+  background: #F6FFED;
+}
+
+.api-status.is-offline {
+  color: #F5222D;
+  background: #FFF1F0;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
 }
 
 /* 统计卡片 */
@@ -321,12 +413,6 @@ onMounted(() => {
 .stat-card-item {
   height: 100%;
   border: none;
-  transition: all 0.3s;
-}
-
-.stat-card-item:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-base) !important;
 }
 
 .stat-card-header {
@@ -384,6 +470,12 @@ onMounted(() => {
 .text-orange { color: #FA8C16; background: #FFF7E6; }
 .text-green { color: #52C41A; background: #F6FFED; }
 
+.text-primary { color: var(--primary-color); }
+.text-success { color: #52C41A; }
+.text-warning { color: #FA8C16; }
+.text-danger { color: #F5222D; }
+.text-secondary { color: var(--text-secondary); }
+
 .bg-blue { background: #1890FF; }
 .bg-green { background: #52C41A; }
 .bg-orange { background: #FA8C16; }
@@ -405,7 +497,6 @@ onMounted(() => {
   cursor: pointer;
   padding: 16px;
   border-radius: 8px;
-  transition: all 0.3s;
 }
 
 .nav-item:hover {
@@ -422,11 +513,6 @@ onMounted(() => {
   margin-bottom: 8px;
   color: #fff;
   font-size: 24px;
-  transition: transform 0.3s;
-}
-
-.nav-item:hover .nav-icon {
-  transform: scale(1.1);
 }
 
 .nav-item span {
@@ -434,23 +520,66 @@ onMounted(() => {
   color: var(--text-primary);
 }
 
-/* 最新动态 */
-.activity-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.activity-item {
-  display: flex;
-  align-items: center;
+/* 数据概览 */
+.overview-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
 }
 
-.activity-avatar {
+.overview-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-radius: 8px;
+  background: var(--bg-page);
+}
+
+.overview-item:hover {
+  background: #f0f5ff;
+}
+
+.overview-title {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.overview-desc {
+  font-size: 12px;
+  color: var(--text-placeholder);
+}
+
+.overview-value {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* 待办提醒 */
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.todo-item:hover {
+  background: var(--bg-page);
+}
+
+.todo-icon {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -458,40 +587,19 @@ onMounted(() => {
   flex-shrink: 0;
 }
 
-.activity-content {
+.todo-content {
   flex: 1;
 }
 
-.activity-title {
+.todo-title {
   font-size: 14px;
   color: var(--text-primary);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
-.activity-time {
+.todo-desc {
   font-size: 12px;
   color: var(--text-secondary);
-}
-
-/* 系统公告 */
-.notice-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.notice-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.notice-text {
-  font-size: 14px;
-  color: var(--text-regular);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* 帮助文档 */
@@ -507,7 +615,7 @@ onMounted(() => {
   gap: 8px;
   color: var(--text-regular);
   font-size: 14px;
-  transition: color 0.3s;
+  cursor: pointer;
 }
 
 .help-item:hover {
@@ -551,6 +659,12 @@ onMounted(() => {
   margin-bottom: 24px;
 }
 
+.card-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: normal;
+}
+
 /* 响应式 */
 @media (max-width: 768px) {
   .dashboard-header {
@@ -561,11 +675,15 @@ onMounted(() => {
   
   .header-right {
     width: 100%;
-    justify-content: space-between;
   }
   
-  .stat-box {
-    align-items: flex-start;
+  .api-status {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .overview-list {
+    grid-template-columns: 1fr;
   }
 }
 </style>

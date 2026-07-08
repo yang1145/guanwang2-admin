@@ -220,7 +220,6 @@ const handleLogin = async () => {
 .login-form :deep(.el-input__wrapper) {
   box-shadow: 0 0 0 1px #dcdfe6 inset;
   background-color: #fff;
-  transition: all 0.3s;
 }
 
 .login-form :deep(.el-input__wrapper:hover) {

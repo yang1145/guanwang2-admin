@@ -184,29 +184,12 @@ onMounted(() => {
   background-color: #f5f7fa;
   min-height: 100%;
   box-sizing: border-box;
-  animation: fadeIn 0.5s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .management-card {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   border-radius: 12px;
   border: none;
-  transition: all 0.3s;
-}
-
-.management-card:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
 .management-card :deep(.el-card__header) {
@@ -237,7 +220,7 @@ onMounted(() => {
   transform: translateY(-50%);
   width: 4px;
   height: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: var(--primary-color);
   border-radius: 2px;
 }
 
@@ -268,10 +251,6 @@ onMounted(() => {
   padding: 16px 0;
 }
 
-:deep(.el-table tr) {
-  transition: all 0.3s;
-}
-
 :deep(.el-table tr:hover) {
   background-color: #f5f7fa;
 }
@@ -284,18 +263,6 @@ onMounted(() => {
 :deep(.el-button) {
   border-radius: 6px;
   font-weight: 500;
-  transition: all 0.3s;
-}
-
-:deep(.el-button--primary) {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border: none;
-}
-
-:deep(.el-button--primary:hover) {
-  background: linear-gradient(135deg, #7c8ef0 0%, #8a5bb8 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 :deep(.el-button--success) {
@@ -305,8 +272,6 @@ onMounted(() => {
 
 :deep(.el-button--success:hover) {
   background: linear-gradient(135deg, #85ce61 0%, #95d475 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(103, 194, 58, 0.4);
 }
 
 :deep(.el-button--small) {
@@ -320,8 +285,6 @@ onMounted(() => {
 
 :deep(.el-button--danger:hover) {
   background: linear-gradient(135deg, #ff7e7e 0%, #ff9090 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(245, 108, 108, 0.4);
 }
 
 /* 对话框样式优化 */
@@ -354,7 +317,6 @@ onMounted(() => {
 
 :deep(.el-input__wrapper) {
   border-radius: 6px;
-  transition: all 0.3s;
 }
 
 :deep(.el-input__wrapper:hover) {
