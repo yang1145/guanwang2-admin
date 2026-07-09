@@ -96,6 +96,11 @@ const handleLogin = async () => {
           password: loginForm.password
         })
         
+        const token = response.data?.data?.token
+        if (token) {
+          localStorage.setItem('adminToken', token)
+        }
+        
         ElMessage.success('登录成功')
         router.push('/admin')
       } catch (error) {

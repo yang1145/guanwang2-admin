@@ -25,29 +25,47 @@
         <el-menu-item index="categories">分类管理</el-menu-item>
       </el-sub-menu>
       
+      <el-menu-item index="tickets">
+        <el-icon><Tickets /></el-icon>
+        <template #title>工单管理</template>
+      </el-menu-item>
+
+      <el-menu-item index="users">
+        <el-icon><User /></el-icon>
+        <template #title>用户管理</template>
+      </el-menu-item>
+
+      <el-sub-menu index="permission-group">
+        <template #title>
+          <el-icon><Lock /></el-icon>
+          <span>权限管理</span>
+        </template>
+        <el-menu-item index="admins">管理员管理</el-menu-item>
+        <el-menu-item index="roles">权限组管理</el-menu-item>
+        <el-menu-item index="permissions">权限管理</el-menu-item>
+      </el-sub-menu>
+
       <el-sub-menu index="system">
         <template #title>
           <el-icon><Setting /></el-icon>
           <span>系统管理</span>
         </template>
-        <el-menu-item index="users">用户管理</el-menu-item>
         <el-menu-item index="site-settings">网站设置</el-menu-item>
         <el-menu-item index="help">帮助文档</el-menu-item>
+      </el-sub-menu>
+
+      <el-sub-menu index="ai-group">
+        <template #title>
+          <el-icon><Cpu /></el-icon>
+          <span>AI 管理</span>
+        </template>
+        <el-menu-item index="ai-chat">AI 聊天控制</el-menu-item>
+        <el-menu-item index="ai-chat-test">AI 聊天测试</el-menu-item>
       </el-sub-menu>
       
       <el-menu-item index="analytics">
         <el-icon><DataAnalysis /></el-icon>
         <template #title>数据分析</template>
-      </el-menu-item>
-      
-      <el-menu-item index="ai-chat">
-        <el-icon><ChatDotRound /></el-icon>
-        <template #title>AI 聊天控制</template>
-      </el-menu-item>
-      
-      <el-menu-item index="ai-chat-test">
-        <el-icon><ChatLineRound /></el-icon>
-        <template #title>AI 聊天测试</template>
       </el-menu-item>
       
       <el-menu-item index="about">
@@ -70,9 +88,11 @@ import {
   House,
   Setting,
   Document,
+  Tickets,
+  User,
+  Lock,
+  Cpu,
   DataAnalysis,
-  ChatDotRound,
-  ChatLineRound,
   InfoFilled,
   Expand,
   Fold
@@ -101,6 +121,10 @@ const handleSelect = (index) => {
     case 'news': router.push('/admin/news'); break;
     case 'contacts': router.push('/admin/contacts'); break;
     case 'users': router.push('/admin/users'); break;
+    case 'admins': router.push('/admin/admins'); break;
+    case 'roles': router.push('/admin/roles'); break;
+    case 'permissions': router.push('/admin/permissions'); break;
+    case 'tickets': router.push('/admin/tickets'); break;
     case 'site-settings': router.push('/admin/site-settings'); break;
     case 'analytics': router.push('/admin/analytics'); break;
     case 'categories': router.push('/admin/categories'); break;
@@ -120,6 +144,10 @@ onMounted(() => {
     '/admin/news': 'news',
     '/admin/contacts': 'contacts',
     '/admin/users': 'users',
+    '/admin/admins': 'admins',
+    '/admin/roles': 'roles',
+    '/admin/permissions': 'permissions',
+    '/admin/tickets': 'tickets',
     '/admin/site-settings': 'site-settings',
     '/admin/analytics': 'analytics',
     '/admin/categories': 'categories',

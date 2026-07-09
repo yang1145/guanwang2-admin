@@ -1,26 +1,21 @@
-import axios from 'axios'
-
-const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api',
-  timeout: 5000
-})
+import authRequest from '@/utils/authRequest'
 
 // 提交联系表单
 export const submitContactForm = (data) => {
-  return apiClient.post('/contact', data)
+  return authRequest.post('/contact', data)
 }
 
 // 获取所有联系信息
 export const getContactMessages = () => {
-  return apiClient.get('/contact')
+  return authRequest.get('/contact')
 }
 
 // 获取特定联系信息
 export const getContactMessageById = (id) => {
-  return apiClient.get(`/contact/${id}`)
+  return authRequest.get(`/contact/${id}`)
 }
 
 // 删除联系信息
 export const deleteContactMessage = (id) => {
-  return apiClient.delete(`/contact/${id}`)
+  return authRequest.delete(`/contact/${id}`)
 }

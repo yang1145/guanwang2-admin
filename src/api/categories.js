@@ -1,41 +1,36 @@
-import axios from 'axios'
-
-const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api',
-  timeout: 5000
-})
+import authRequest from '@/utils/authRequest'
 
 // 获取所有分类
 export const getCategories = () => {
-  return apiClient.get('/categories')
+  return authRequest.get('/categories')
 }
 
 // 获取特定分类
 export const getCategoryById = (id) => {
-  return apiClient.get(`/categories/${id}`)
+  return authRequest.get(`/categories/${id}`)
 }
 
 // 创建分类
 export const createCategory = (data) => {
-  return apiClient.post('/categories', data)
+  return authRequest.post('/categories', data)
 }
 
 // 更新分类
 export const updateCategory = (id, data) => {
-  return apiClient.put(`/categories/${id}`, data)
+  return authRequest.put(`/categories/${id}`, data)
 }
 
 // 更新分类列表
 export const updateCategories = (data) => {
-  return apiClient.put('/categories', data)
+  return authRequest.put('/categories', data)
 }
 
 // 删除分类
 export const deleteCategory = (id) => {
-  return apiClient.delete(`/categories/${id}`)
+  return authRequest.delete(`/categories/${id}`)
 }
 
 // 同步分类
 export const syncCategories = () => {
-  return apiClient.post('/categories/sync')
+  return authRequest.post('/categories/sync')
 }

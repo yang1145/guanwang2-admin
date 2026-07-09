@@ -1,36 +1,31 @@
-import axios from 'axios'
-
-const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api',
-  timeout: 5000
-})
+import authRequest from '@/utils/authRequest'
 
 // 获取所有新闻
 export const getNews = (params) => {
-  return apiClient.get('/news', { params })
+  return authRequest.get('/news', { params })
 }
 
 // 获取特定新闻详情
 export const getNewsById = (id) => {
-  return apiClient.get(`/news/${id}`)
+  return authRequest.get(`/news/${id}`)
 }
 
 // 获取热门新闻
 export const getPopularNews = () => {
-  return apiClient.get('/news/popular')
+  return authRequest.get('/news/popular')
 }
 
 // 创建新闻
 export const createNews = (data) => {
-  return apiClient.post('/news', data)
+  return authRequest.post('/news', data)
 }
 
 // 更新新闻
 export const updateNews = (id, data) => {
-  return apiClient.put(`/news/${id}`, data)
+  return authRequest.put(`/news/${id}`, data)
 }
 
 // 删除新闻
 export const deleteNews = (id) => {
-  return apiClient.delete(`/news/${id}`)
+  return authRequest.delete(`/news/${id}`)
 }

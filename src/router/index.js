@@ -16,6 +16,10 @@ import AIChatControl from '../views/AIChatControl.vue'
 import AIChat from '../views/AIChat.vue'
 import About from '../views/About.vue'
 import AdminProfile from '../views/AdminProfile.vue'
+import AdminManagement from '../views/AdminManagement.vue'
+import RoleManagement from '../views/RoleManagement.vue'
+import PermissionManagement from '../views/PermissionManagement.vue'
+import TicketManagement from '../views/TicketManagement.vue'
 
 const routes = [
   {
@@ -100,6 +104,26 @@ const routes = [
         path: 'profile',
         name: 'AdminProfile',
         component: AdminProfile
+      },
+      {
+        path: 'admins',
+        name: 'AdminManagement',
+        component: AdminManagement
+      },
+      {
+        path: 'roles',
+        name: 'RoleManagement',
+        component: RoleManagement
+      },
+      {
+        path: 'permissions',
+        name: 'PermissionManagement',
+        component: PermissionManagement
+      },
+      {
+        path: 'tickets',
+        name: 'TicketManagement',
+        component: TicketManagement
       }
     ]
   },

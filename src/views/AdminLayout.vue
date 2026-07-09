@@ -80,6 +80,7 @@ const handleCommand = (command) => {
 }
 
 const logout = () => {
+  localStorage.removeItem('adminToken')
   router.push('/login')
 }
 </script>
