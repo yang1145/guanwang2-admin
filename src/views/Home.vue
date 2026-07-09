@@ -74,13 +74,25 @@
               <div class="nav-icon bg-pink"><el-icon><Files /></el-icon></div>
               <span>分类管理</span>
             </div>
-            <div class="nav-item" @click="$router.push('/admin/ai-chat')">
-              <div class="nav-icon bg-purple"><el-icon><ChatDotRound /></el-icon></div>
-              <span>AI 聊天控制</span>
+            <div class="nav-item" @click="$router.push('/admin/goods')">
+              <div class="nav-icon bg-teal"><el-icon><Goods /></el-icon></div>
+              <span>商品管理</span>
             </div>
-            <div class="nav-item" @click="$router.push('/admin/ai-chat-test')">
-              <div class="nav-icon bg-indigo"><el-icon><ChatLineRound /></el-icon></div>
-              <span>AI 聊天测试</span>
+            <div class="nav-item" @click="$router.push('/admin/tickets')">
+              <div class="nav-icon bg-red"><el-icon><Tickets /></el-icon></div>
+              <span>工单管理</span>
+            </div>
+            <div class="nav-item" @click="$router.push('/admin/admins')">
+              <div class="nav-icon bg-indigo"><el-icon><Lock /></el-icon></div>
+              <span>管理员管理</span>
+            </div>
+            <div class="nav-item" @click="$router.push('/admin/roles')">
+              <div class="nav-icon bg-orange-dark"><el-icon><UserFilled /></el-icon></div>
+              <span>权限组管理</span>
+            </div>
+            <div class="nav-item" @click="$router.push('/admin/analytics')">
+              <div class="nav-icon bg-cyan"><el-icon><DataAnalysis /></el-icon></div>
+              <span>数据分析</span>
             </div>
           </div>
         </el-card>
@@ -177,13 +189,15 @@
 <script setup>
 import { reactive, onMounted, ref, computed } from 'vue'
 import { 
-  User, Document, Box, ChatDotRound, ChatLineRound, Setting, Files,
+  User, Document, Box, ChatDotRound, Setting, Files,
+  Tickets, Lock, Goods, UserFilled, DataAnalysis,
   QuestionFilled
 } from '@element-plus/icons-vue'
 import { getProducts } from '@/api/products'
 import { getNews } from '@/api/news'
 import { getContactMessages } from '@/api/contact'
 import { getUserCount } from '@/api/users'
+import { getTicketStats } from '@/api/tickets'
 
 const loading = ref(true)
 const apiOnline = ref(false)
@@ -191,7 +205,8 @@ const apiOnline = ref(false)
 // 待处理数据
 const pendingData = reactive({
   contacts: 0,
-  unreadContacts: 0
+  unreadContacts: 0,
+  pendingTickets: 0
 })
 
 // 实时数据
@@ -271,6 +286,12 @@ const overviewItems = computed(() => [
     desc: '需尽快回复',
     value: pendingData.unreadContacts,
     valueClass: pendingData.unreadContacts > 0 ? 'text-danger' : 'text-secondary'
+  },
+  {
+    title: '待处理工单',
+    desc: '需管理员介入',
+    value: pendingData.pendingTickets,
+    valueClass: pendingData.pendingTickets > 0 ? 'text-danger' : 'text-secondary'
   }
 ])
 
@@ -284,6 +305,15 @@ const todoList = computed(() => [
     iconClass: 'bg-purple',
     tagType: pendingData.unreadContacts > 0 ? 'danger' : 'info',
     path: '/admin/contacts'
+  },
+  {
+    title: '未处理工单',
+    desc: '等待管理员受理的工单',
+    count: pendingData.pendingTickets,
+    icon: Tickets,
+    iconClass: 'bg-red',
+    tagType: pendingData.pendingTickets > 0 ? 'danger' : 'info',
+    path: '/admin/tickets'
   }
 ])
 
@@ -308,11 +338,12 @@ const greeting = computed(() => {
 const loadData = async () => {
   loading.value = true
   try {
-    const [products, news, contacts, users] = await Promise.all([
+    const [products, news, contacts, users, ticketStats] = await Promise.all([
       getProducts(),
       getNews(),
       getContactMessages(),
-      getUserCount()
+      getUserCount(),
+      getTicketStats()
     ])
     
     apiOnline.value = true
@@ -344,6 +375,11 @@ const loadData = async () => {
     pendingData.unreadContacts = contactList.filter(item => 
       !item.status || item.status === 'unread' || item.status === 'pending'
     ).length
+
+    // 计算未处理工单
+    const stats = ticketStats.data?.data || []
+    const pendingStat = stats.find(s => s.status === 'pending')
+    pendingData.pendingTickets = pendingStat ? pendingStat.count : 0
     
   } catch (error) {
     console.error('加载数据失败', error)
@@ -491,6 +527,9 @@ onMounted(() => {
 .bg-cyan { background: #13C2C2; }
 .bg-pink { background: #EB2F96; }
 .bg-indigo { background: #4F46E5; }
+.bg-teal { background: #009688; }
+.bg-red { background: #F5222D; }
+.bg-orange-dark { background: #D4380D; }
 
 /* 快捷导航 */
 .quick-nav {
